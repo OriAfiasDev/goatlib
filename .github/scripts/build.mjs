@@ -105,7 +105,10 @@ async function selfHostGoogleFonts(href) {
     css = css.split(u).join(`__FONTROOT__${file}`);
   }));
   css = await minifyCss(css);
-  fontCache.set(href, { css, count: urls.length });
+  // Latin and Hebrew subsets carry the first paint; preloading them avoids a late font swap (layout shift).
+  const preload = [...css.matchAll(/@font-face\{[^}]*?src:url\((__FONTROOT__[^)]+)\)[^}]*?unicode-range:([^}]*)\}/g)]
+    .filter((m) => /U\+0000-00FF|U\+0590-05FF/.test(m[2])).map((m) => m[1]);
+  fontCache.set(href, { css, count: urls.length, preload });
   return fontCache.get(href);
 }
 
@@ -129,9 +132,10 @@ async function buildHtml(file, html) {
 
     if (/^https:\/\/fonts\.googleapis\.com\/css/.test(href)) {
       try {
-        const { css, count } = await selfHostGoogleFonts(href);
+        const { css, count, preload } = await selfHostGoogleFonts(href);
         const prefix = relFrom(file, 'x').replace(/x$/, '');
-        html = html.replace(tag, `<style>${css.split('__FONTROOT__').join(prefix)}</style>`);
+        const hints = preload.map((f) => `<link rel="preload" href="${f.replace('__FONTROOT__', prefix)}" as="font" type="font/woff2" crossorigin>`).join('');
+        html = html.replace(tag, `${hints}<style>${css.split('__FONTROOT__').join(prefix)}</style>`);
         notes.push(`self-hosted Google Fonts (${count} files)`);
       } catch (err) {
         const safe = href.replace(/"/g, '&quot;');
