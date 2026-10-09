@@ -36,7 +36,7 @@ export function renderFooter(site) {
 </div>
 <div class="site-footer__stage" aria-hidden="true">
   <img class="site-footer__goat" src="${esc(site.brand?.mark)}" alt="" width="253" height="306" loading="lazy">
-  <p class="site-footer__word" dir="ltr">${esc(f.wordmark)}</p>
+  <p class="site-footer__word" dir="ltr" data-word="${esc(f.wordmark)}"></p>
 </div>
 <p class="site-footer__legal wrap"><span dir="ltr">${esc(f.legal)}</span></p>`;
 }

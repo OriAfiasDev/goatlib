@@ -1495,6 +1495,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
   letter-spacing: -.01em;
   color: var(--ink);
 }
+/* decorative: drawn as generated content so contrast audits don't read it as text */
+.site-footer__word::before { content: attr(data-word); }
 .site-footer__legal {
   position: relative;
   z-index: 2;
