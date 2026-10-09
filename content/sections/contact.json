@@ -1,0 +1,102 @@
+{
+  "type": "contact",
+  "id": "contact",
+  "slate": "בריף",
+  "title": "בואו נפיק\nאת זה",
+  "text": "ארבע שאלות, בערך דקה. אני חוזר אליכם תוך [חסר: זמן תגובה].",
+  "direct": "וואטסאפ: [חסר: מספר] · מייל: [חסר: כתובת מייל]",
+  "face": { "src": "", "alt": "מתנאל גוטליב", "missing": "[חסר: תמונת פנים של מתנאל]" },
+  "form": {
+    "stepLabel": "שלב {n} מתוך {total}",
+    "prev": "חזרה",
+    "next": "הבא",
+    "submit": "שלחו למתנאל",
+    "steps": [
+      {
+        "legend": "מה מפיקים?",
+        "error": "בחרו אחת מהאפשרויות.",
+        "fields": [
+          {
+            "kind": "choice",
+            "name": "type",
+            "summary": "מה",
+            "required": true,
+            "options": ["קליפ", "פרסומת או פרומו", "סרט או סדרה", "שירותי הפקה", "משהו אחר"]
+          }
+        ]
+      },
+      {
+        "legend": "תקציב ותאריך",
+        "error": "בחרו מדרגת תקציב, גם ״עוד לא יודעים״ זה בסדר.",
+        "note": "המדרגות הן הצעה מהבריף הפנימי. [חסר: אישור המדרגות מול מתנאל]",
+        "fields": [
+          {
+            "kind": "choice",
+            "name": "budget",
+            "summary": "תקציב",
+            "required": true,
+            "options": ["עד 15 אלף ₪", "15–40 אלף ₪", "40–100 אלף ₪", "מעל 100 אלף ₪", "עוד לא יודעים"]
+          },
+          {
+            "kind": "text",
+            "name": "date",
+            "label": "מתי זה צריך לצאת?",
+            "summary": "מתי",
+            "placeholder": "למשל: אמצע דצמבר, לפני הסינגל"
+          }
+        ]
+      },
+      {
+        "legend": "ספרו בקצרה",
+        "error": "כתבו כמה מילים על הפרויקט.",
+        "fields": [
+          {
+            "kind": "textarea",
+            "name": "about",
+            "label": "מה הרעיון?",
+            "summary": "הרעיון",
+            "required": true,
+            "placeholder": "שיר, מוצר, סיפור. כמה משפטים מספיקים."
+          },
+          {
+            "kind": "url",
+            "name": "ref",
+            "label": "רפרנס (לא חובה)",
+            "summary": "רפרנס",
+            "placeholder": "YouTube / Instagram / Drive"
+          },
+          {
+            "kind": "checks",
+            "name": "extras",
+            "label": "צריך גם:",
+            "summary": "צריך גם",
+            "options": ["גרסאות 9:16", "טיזרים", "מאחורי הקלעים"]
+          }
+        ]
+      },
+      {
+        "legend": "איך חוזרים אליכם?",
+        "error": "צריך שם וטלפון כדי לחזור אליכם.",
+        "fields": [
+          { "kind": "text", "name": "name", "label": "שם", "summary": "שם", "required": true, "autocomplete": "name", "half": true },
+          {
+            "kind": "select",
+            "name": "role",
+            "label": "אני",
+            "summary": "תפקיד",
+            "half": true,
+            "options": ["אמן/ית", "מנהל/ת אמן", "משרד פרסום", "מותג", "מפיק/ה או במאי/ת", "אחר"]
+          },
+          { "kind": "tel", "name": "phone", "label": "טלפון", "summary": "טלפון", "required": true, "autocomplete": "tel", "half": true },
+          { "kind": "email", "name": "email", "label": "מייל", "summary": "מייל", "autocomplete": "email", "half": true },
+          { "kind": "check", "name": "wa_ok", "label": "אפשר לחזור אליי בוואטסאפ", "summary": "וואטסאפ", "value": "כן", "checked": true },
+          { "kind": "check", "name": "lang_en", "label": "I prefer English", "summary": "Language", "value": "English", "lang": "en" }
+        ]
+      }
+    ],
+    "done": {
+      "title": "קיבלתי.",
+      "text": "נפתח וואטסאפ עם הבריף שלכם, רק ללחוץ ״שלח״. אחזור אליכם תוך [חסר: זמן תגובה]."
+    }
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "type": "clips",
+  "id": "clips",
+  "slate": "קליפים",
+  "title": "2026 על הסט",
+  "aside": "הפקה ראשית, ולפעמים גם בימוי. כל קליפ נבנה מאפס סביב האמן, ולכן אף אחד מהם לא נראה כמו הקודם.",
+  "missingVideo": "[חסר: קישור לקליפ + תמונה ממוזערת]",
+  "items": [
+    {
+      "title": "זהרה",
+      "artist": "אסולין × גל ג'ומה",
+      "role": "הפקה ראשית",
+      "aspect": "2.39:1",
+      "video": "https://www.youtube.com/watch?v=4k9oiC_01rM",
+      "poster": "",
+      "views": "[חסר: צפיות]",
+      "quote": {
+        "text": "“One of the wildest productions I ever did”",
+        "by": "Matanel, LinkedIn",
+        "lang": "en"
+      }
+    },
+    {
+      "title": "פבלו אסקובר",
+      "artist": "האחיות כרקוקלי וליעד מאיר",
+      "role": "הפקה + בימוי",
+      "aspect": "4:5",
+      "video": "https://www.youtube.com/watch?v=RHfDl3HZyTY",
+      "poster": "",
+      "views": "[חסר: צפיות]",
+      "cast": "על הסט: מוריה כהן, חיים זנאטי, מני ממטרה"
+    },
+    {
+      "title": "פלה של השכונה",
+      "artist": "דניאל גד",
+      "role": "הפקה ראשית + בימוי",
+      "aspect": "16:9",
+      "video": "https://www.youtube.com/watch?v=m2PxmaFAZhk",
+      "poster": "",
+      "views": "[חסר: צפיות]"
+    },
+    {
+      "title": "גם אם יישרף העולם",
+      "artist": "שירי מימון",
+      "role": "הפקה ראשית",
+      "aspect": "9:16",
+      "video": "https://www.youtube.com/watch?v=i7RKW5UI__0",
+      "poster": "",
+      "views": "[חסר: צפיות]"
+    }
+  ],
+  "more": "**עוד קליפים שהפקתי או כתבתי:** נועה 2000, “BUG” · עודד פז והקסדות, ״להיות טל מוסרי״ · Nastya Rod · Freedom Boy · Hype Crew",
+  "quotes": "[חסר: 2–3 ציטוטים קצרים מאמנים או ממנהלים, במקור ובלי עריכה]",
+  "cta": {
+    "label": "רוצים קליפ כמו ״זהרה״? בואו נדבר",
+    "href": "#contact",
+    "prefill": {
+      "type": "קליפ"
+    }
+  }
+}

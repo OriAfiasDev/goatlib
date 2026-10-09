@@ -1,0 +1,20 @@
+{
+  "type": "hero",
+  "id": "top",
+  "kicker": "GOATLIB Entertainment · בית הפקה · תל אביב–יפו",
+  "teaser": "גללו. ותחזיקו חזק.",
+  "title": ["הפקות", "שנהנים", "מהן."],
+  "accentLine": 3,
+  "lede": "קליפים, פרסומות וסרטים. מהרעיון ועד הצילום, בתקציב חכם ובלי קיצורי דרך.",
+  "who": "מהשיחה הראשונה ועד הקובץ האחרון אתם מדברים איתי, המפיק. לא עם מנהל לקוח.",
+  "ctaPrimary": { "label": "בואו נפיק את זה", "href": "#contact" },
+  "ctaSecondary": { "label": "לראות את הריל", "href": "#reel" },
+  "ghostWord": "GOATLIB",
+  "hud": {
+    "slate": "SC 01 · TAKE 1",
+    "camera": "A CAM · 35MM · T1.9",
+    "exposure": "ISO 800 · 1/50 · 5600K",
+    "focusLabel": "FOCUS",
+    "stamp": "TAKE 1 · PRINT"
+  }
+}

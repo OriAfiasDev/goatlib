@@ -1,0 +1,68 @@
+{
+  "lang": "he",
+  "dir": "rtl",
+  "meta": {
+    "title": "GOATLIB Entertainment | הפקת קליפים, פרסומות וסרטים בתל אביב",
+    "description": "בית הפקה בתל אביב בהובלת המפיק מתנאל גוטליב. הפקת קליפים לאמנים, פרסומות ופרומו, והפקה בפועל לסרטים. תקציב תחרותי, בלי קיצורי דרך.",
+    "ogImage": "assets/img/og.jpg"
+  },
+  "theme": {
+    "colors": {
+      "set": "#1C1D1F",
+      "ink": "#010101",
+      "chalk": "#F6F4F0",
+      "amber": "#F79634",
+      "smoke": "#8E8E94"
+    }
+  },
+  "brand": {
+    "name": "GOATLIB",
+    "suffix": "Entertainment",
+    "mark": "assets/img/goatlib-mark.svg",
+    "homeLabel": "GOATLIB Entertainment, לראש העמוד"
+  },
+  "contact": {
+    "whatsappNumber": "972542533533",
+    "whatsappGreeting": "היי מתנאל, ראיתי את האתר ורוצה להפיק…",
+    "whatsappLabel": "וואטסאפ למתנאל",
+    "email": ""
+  },
+  "skipLink": "דילוג לתוכן",
+  "header": {
+    "navLabel": "ניווט ראשי",
+    "nav": [
+      { "label": "קליפים", "href": "#clips" },
+      { "label": "סרטים", "href": "#films" },
+      { "label": "פרסומות", "href": "#ads" },
+      { "label": "איך זה עובד", "href": "#process" },
+      { "label": "שאלות", "href": "#faq" }
+    ],
+    "cta": { "label": "בואו נפיק את זה", "href": "#contact" }
+  },
+  "sections": [
+    "hero",
+    "reel",
+    "doors",
+    "band",
+    "clips",
+    "films",
+    "ads",
+    "manifesto",
+    "process",
+    "about",
+    "faq",
+    "contact"
+  ],
+  "footer": {
+    "line": "GOATLIB Entertainment · בית הפקה · תל אביב–יפו",
+    "small": "קליפים / פרסומות / סרטים. מיוצג על ידי סוכנות ניב עשת כהן.",
+    "links": [
+      { "label": "Instagram", "href": "https://www.instagram.com/goatlib.entertainment/" },
+      { "label": "LinkedIn", "href": "https://www.linkedin.com/in/matanel-gotlib-aa547a28b" },
+      { "label": "WhatsApp", "whatsapp": true },
+      { "label": "[חסר: מייל]" }
+    ],
+    "wordmark": "GOATLIB",
+    "legal": "© 2026 GOATLIB Entertainment"
+  }
+}
