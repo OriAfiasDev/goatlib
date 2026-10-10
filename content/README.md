@@ -31,7 +31,7 @@ written by the build from the studio:
 `npm run build` alone uses these local files. Against the studio:
 
 ```bash
-CONTENT_SOURCE=http CONTENT_URL=https://studio-beryl-seven-51.vercel.app/api/v1/sites/goatlib STUDIO_URL=https://studio-beryl-seven-51.vercel.app npm run build
+CONTENT_SOURCE=http CONTENT_URL=https://studio.afias.dev/api/v1/sites/goatlib STUDIO_URL=https://studio.afias.dev npm run build
 ```
 
 ## How a page is built
