@@ -4,3 +4,6 @@ dist/
 # working material: the client's original JPG logo and the traced SVG deliverables
 # (the site uses its own copies in assets/img/)
 brand/
+
+# client correspondence, not for the public repo
+handover/
