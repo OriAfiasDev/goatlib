@@ -1,0 +1,558 @@
+{
+  "version": 1,
+  "pages": [{ "id": "home", "title": "דף הבית", "path": "/" }],
+  "theme": {
+    "fields": [
+      {
+        "key": "colors",
+        "label": "צבעים",
+        "type": "group",
+        "help": "חמשת הצבעים נדגמו מהלוגו. כל שאר הגוונים באתר נגזרים מהם.",
+        "fields": [
+          { "key": "set", "label": "רקע (הסט)", "type": "color", "presets": ["#1C1D1F"] },
+          { "key": "ink", "label": "קווי מתאר, וטקסט על כתום", "type": "color", "presets": ["#010101"] },
+          { "key": "chalk", "label": "טקסט, וסקשנים בהירים", "type": "color", "presets": ["#F6F4F0"] },
+          { "key": "amber", "label": "כתום המותג", "type": "color", "presets": ["#F79634"], "help": "על הכתום כותבים תמיד בצבע הקווים, לא בלבן: לבן על כתום לא עובר ניגודיות." },
+          { "key": "smoke", "label": "טקסט משני (קרדיטים ופרטים)", "type": "color", "presets": ["#8E8E94"] }
+        ]
+      }
+    ]
+  },
+  "settings": {
+    "fields": [
+      {
+        "key": "meta",
+        "label": "גוגל ושיתופים",
+        "type": "group",
+        "fields": [
+          { "key": "title", "label": "כותרת בגוגל", "type": "text", "maxLength": 70, "help": "עד 60 תווים. מופיעה כקישור הכחול בתוצאות החיפוש." },
+          { "key": "description", "label": "תיאור בגוגל", "type": "text", "multiline": true, "maxLength": 170, "help": "משפט או שניים, עד 155 תווים." },
+          { "key": "ogTitle", "label": "כותרת בשיתוף", "type": "text", "maxLength": 90, "help": "מה שמופיע כששולחים את הקישור בוואטסאפ או בפייסבוק." },
+          { "key": "ogDescription", "label": "תיאור בשיתוף", "type": "text", "multiline": true, "maxLength": 200 }
+        ]
+      },
+      {
+        "key": "contact",
+        "label": "וואטסאפ",
+        "type": "group",
+        "fields": [
+          { "key": "whatsappNumber", "label": "מספר", "type": "text", "ltr": true, "maxLength": 15, "placeholder": "972501234567", "help": "ספרות בלבד: 972 ואחריו המספר בלי האפס. ריק = כפתורי הוואטסאפ מובילים לטופס הבריף." },
+          { "key": "whatsappGreeting", "label": "ההודעה שנפתחת", "type": "text", "multiline": true, "maxLength": 200, "help": "טופס הבריף מוסיף אחריה את התשובות." },
+          { "key": "whatsappLabel", "label": "טקסט הכפתור", "type": "text", "maxLength": 30 }
+        ]
+      },
+      {
+        "key": "brand",
+        "label": "מותג",
+        "type": "group",
+        "fields": [
+          { "key": "name", "label": "שם, בלוגו העליון", "type": "text", "ltr": true, "maxLength": 20 },
+          { "key": "suffix", "label": "השורה הקטנה ליד השם", "type": "text", "ltr": true, "maxLength": 24 },
+          { "key": "homeLabel", "label": "תיאור הלוגו לקוראי מסך", "type": "text", "maxLength": 80 }
+        ]
+      },
+      {
+        "key": "header",
+        "label": "תפריט עליון",
+        "type": "group",
+        "fields": [
+          { "key": "nav", "label": "קישורים", "type": "list", "itemLabel": "קישור", "max": 7, "item": { "key": "link", "label": "קישור", "type": "link" } },
+          { "key": "cta", "label": "כפתור", "type": "link" },
+          { "key": "navLabel", "label": "שם התפריט לקוראי מסך", "type": "text", "maxLength": 40 }
+        ]
+      },
+      {
+        "key": "footer",
+        "label": "תחתית הדף",
+        "type": "group",
+        "fields": [
+          { "key": "line", "label": "שורה ראשית", "type": "text", "maxLength": 90 },
+          { "key": "small", "label": "שורה קטנה", "type": "text", "maxLength": 140 },
+          {
+            "key": "links",
+            "label": "קישורים",
+            "type": "list",
+            "itemLabel": "קישור",
+            "titleKey": "label",
+            "max": 8,
+            "fields": [
+              { "key": "label", "label": "טקסט", "type": "text", "maxLength": 40 },
+              { "key": "href", "label": "כתובת", "type": "text", "ltr": true, "maxLength": 300, "help": "ריק = טקסט בלי קישור." },
+              { "key": "whatsapp", "label": "פותח וואטסאפ", "type": "boolean", "help": "במקום הכתובת: צ'אט עם ההודעה שנפתחת בוואטסאפ." }
+            ]
+          },
+          { "key": "legal", "label": "זכויות יוצרים", "type": "text", "maxLength": 80 },
+          { "key": "wordmark", "label": "המילה הגדולה בתחתית", "type": "text", "ltr": true, "maxLength": 12, "scope": "design" }
+        ]
+      },
+      { "key": "skipLink", "label": "\"דילוג לתוכן\" לקוראי מסך", "type": "text", "maxLength": 40 }
+    ]
+  },
+  "sectionTypes": {
+    "hero": {
+      "label": "פתיח",
+      "description": "הסצנה הראשונה: העז פורץ דרך העדשה, ואחריו הכותרת והכפתורים.",
+      "icon": "sparkles",
+      "max": 1,
+      "fields": [
+        { "key": "kicker", "label": "שורה מעל הכותרת", "type": "text", "maxLength": 70 },
+        {
+          "key": "title",
+          "label": "כותרת",
+          "type": "list",
+          "itemLabel": "שורה",
+          "max": 4,
+          "help": "כל שורה נוחתת על המסך בנפרד. מילה אחת או שתיים קצרות: בטלפון שורה של יותר מ-8 אותיות נשברת.",
+          "item": { "key": "line", "label": "שורה", "type": "text", "maxLength": 10 }
+        },
+        { "key": "accentLine", "label": "השורה בכתום", "type": "number", "min": 1, "max": 4, "step": 1, "scope": "design" },
+        { "key": "lede", "label": "משפט פתיחה", "type": "text", "multiline": true, "maxLength": 160 },
+        { "key": "who", "label": "שורה שנייה", "type": "text", "multiline": true, "maxLength": 160 },
+        { "key": "ctaPrimary", "label": "כפתור ראשי", "type": "link" },
+        { "key": "ctaSecondary", "label": "קישור משני", "type": "link" },
+        { "key": "teaser", "label": "משפט לפני הגלילה", "type": "text", "maxLength": 40 },
+        { "key": "ghostWord", "label": "המילה הגדולה ברקע", "type": "text", "ltr": true, "maxLength": 12, "scope": "design" },
+        {
+          "key": "hud",
+          "label": "שכבת המצלמה",
+          "type": "group",
+          "scope": "design",
+          "fields": [
+            { "key": "slate", "label": "פינה עליונה, אחרי REC", "type": "text", "ltr": true, "maxLength": 30 },
+            { "key": "camera", "label": "מצלמה ועדשה", "type": "text", "ltr": true, "maxLength": 30 },
+            { "key": "exposure", "label": "חשיפה", "type": "text", "ltr": true, "maxLength": 30 },
+            { "key": "focusLabel", "label": "תווית הפוקוס", "type": "text", "ltr": true, "maxLength": 10 },
+            { "key": "stamp", "label": "החותמת בסוף", "type": "text", "ltr": true, "maxLength": 24 }
+          ]
+        },
+        { "key": "anchor", "label": "עוגן", "type": "text", "ltr": true, "maxLength": 30, "scope": "design", "help": "השם אחרי # בכתובת. קישורים בתפריט ובכפתורים מפנים אליו, אז משנים רק יחד איתם." }
+      ],
+      "preset": {
+        "anchor": "top",
+        "kicker": "GOATLIB Entertainment · בית הפקה",
+        "title": ["כותרת", "חדשה."],
+        "accentLine": 2,
+        "lede": "משפט פתיחה.",
+        "ctaPrimary": { "label": "בואו נפיק את זה", "href": "#contact" },
+        "teaser": "גללו.",
+        "ghostWord": "GOATLIB",
+        "hud": { "slate": "SC 01 · TAKE 1", "camera": "A CAM · 35MM · T1.9", "exposure": "ISO 800 · 1/50 · 5600K", "focusLabel": "FOCUS", "stamp": "TAKE 1 · PRINT" }
+      }
+    },
+    "reel": {
+      "label": "ריל",
+      "description": "וידאו לופ שקט במסגרת קולנוע, מתחת לפתיח.",
+      "icon": "clapperboard",
+      "max": 1,
+      "fields": [
+        { "key": "video", "label": "וידאו", "type": "video", "help": "לופ שקט של 6–12 שניות, MP4 עד 5MB. מתנגן רק כשהוא על המסך." },
+        { "key": "poster", "label": "תמונת פוסטר", "type": "image", "aspect": "2.39:1", "help": "מוצגת עד שהווידאו מתחיל, ובמקומו למי שביקש פחות תנועה." },
+        { "key": "caption", "label": "כיתוב", "type": "text", "maxLength": 80 },
+        { "key": "missing", "label": "הטקסט במסגרת כשאין וידאו", "type": "text", "maxLength": 160, "scope": "design" },
+        { "key": "clapper", "label": "שורת הקלאפר, כשאין וידאו", "type": "text", "ltr": true, "maxLength": 50, "scope": "design" },
+        {
+          "key": "aspect",
+          "label": "יחס המסגרת",
+          "type": "select",
+          "scope": "design",
+          "options": [
+            { "value": "2.39:1", "label": "סינמסקופ 2.39:1" },
+            { "value": "16:9", "label": "16:9" }
+          ]
+        },
+        { "key": "anchor", "label": "עוגן", "type": "text", "ltr": true, "maxLength": 30, "scope": "design", "help": "השם אחרי # בכתובת. קישורים בתפריט ובכפתורים מפנים אליו, אז משנים רק יחד איתם." }
+      ],
+      "preset": { "anchor": "reel", "caption": "ריל", "missing": "[חסר: ריל]", "clapper": "REEL · TAKE 1", "aspect": "2.39:1" }
+    },
+    "doors": {
+      "label": "מה מפיקים",
+      "description": "דלת לכל סוג הפקה, וכל דלת מובילה לסקשן שלה.",
+      "icon": "list",
+      "max": 1,
+      "fields": [
+        { "key": "slate", "label": "תווית", "type": "text", "maxLength": 30, "help": "התווית ליד מספר הסצנה. ריק = הסקשן לא ממוספר." },
+        { "key": "title", "label": "כותרת לקוראי מסך", "type": "text", "maxLength": 60 },
+        {
+          "key": "items",
+          "label": "דלתות",
+          "type": "list",
+          "itemLabel": "דלת",
+          "titleKey": "title",
+          "max": 4,
+          "fields": [
+            { "key": "title", "label": "כותרת", "type": "text", "maxLength": 30 },
+            { "key": "text", "label": "טקסט", "type": "text", "multiline": true, "maxLength": 180 },
+            { "key": "formats", "label": "פורמטים", "type": "text", "ltr": true, "maxLength": 30 },
+            { "key": "href", "label": "מובילה אל", "type": "text", "ltr": true, "maxLength": 300, "placeholder": "#clips", "help": "# ושם העוגן של הסקשן." }
+          ]
+        },
+        { "key": "anchor", "label": "עוגן", "type": "text", "ltr": true, "maxLength": 30, "scope": "design", "help": "השם אחרי # בכתובת. קישורים בתפריט ובכפתורים מפנים אליו, אז משנים רק יחד איתם." }
+      ],
+      "preset": { "anchor": "services", "slate": "מה מפיקים", "title": "מה אני מפיק" }
+    },
+    "band": {
+      "label": "רצועת שמות",
+      "description": "שמות שרצים לרוחב המסך, למשל אמנים שהפקתי להם.",
+      "icon": "sparkles",
+      "fields": [
+        { "key": "label", "label": "תווית", "type": "text", "maxLength": 30 },
+        { "key": "items", "label": "שמות", "type": "list", "itemLabel": "שם", "max": 24, "item": { "key": "name", "label": "שם", "type": "text", "maxLength": 40 } },
+        { "key": "ariaLabel", "label": "תיאור לקוראי מסך", "type": "text", "maxLength": 80 }
+      ],
+      "preset": { "label": "קליפים שהפקתי ל־", "items": ["שם"], "ariaLabel": "אמנים שהפקתי להם קליפים" }
+    },
+    "clips": {
+      "label": "קליפים",
+      "description": "קליפים עם נגן, התפקיד בהפקה וציטוטים.",
+      "icon": "clapperboard",
+      "max": 1,
+      "fields": [
+        { "key": "slate", "label": "תווית", "type": "text", "maxLength": 30, "help": "התווית ליד מספר הסצנה. ריק = הסקשן לא ממוספר." },
+        { "key": "title", "label": "כותרת", "type": "text", "maxLength": 40 },
+        { "key": "aside", "label": "טקסט ליד הכותרת", "type": "text", "multiline": true, "maxLength": 220 },
+        {
+          "key": "items",
+          "label": "קליפים",
+          "type": "list",
+          "itemLabel": "קליפ",
+          "titleKey": "title",
+          "max": 12,
+          "fields": [
+            { "key": "title", "label": "שם השיר", "type": "text", "maxLength": 50 },
+            { "key": "artist", "label": "אמן", "type": "text", "maxLength": 50 },
+            { "key": "role", "label": "התפקיד שלי", "type": "text", "maxLength": 40 },
+            { "key": "video", "label": "קישור לקליפ", "type": "text", "ltr": true, "maxLength": 300, "placeholder": "https://www.youtube.com/watch?v=…", "help": "יוטיוב או וימאו. הנגן נטען רק כשלוחצים." },
+            { "key": "poster", "label": "תמונה ממוזערת", "type": "image", "help": "לא חובה: בלי תמונה מוצגת התמונה של יוטיוב." },
+            { "key": "views", "label": "צפיות", "type": "text", "maxLength": 30 },
+            { "key": "cast", "label": "על הסט", "type": "text", "maxLength": 120 },
+            {
+              "key": "quote",
+              "label": "ציטוט",
+              "type": "group",
+              "fields": [
+                { "key": "text", "label": "ציטוט", "type": "text", "multiline": true, "maxLength": 200, "help": "ריק = בלי ציטוט." },
+                { "key": "by", "label": "מי אמר", "type": "text", "maxLength": 60 },
+                {
+                  "key": "lang",
+                  "label": "שפה",
+                  "type": "select",
+                  "scope": "design",
+                  "options": [
+                    { "value": "he", "label": "עברית" },
+                    { "value": "en", "label": "אנגלית" }
+                  ]
+                }
+              ]
+            },
+            {
+              "key": "aspect",
+              "label": "יחס המסגרת",
+              "type": "select",
+              "scope": "design",
+              "options": [
+                { "value": "16:9", "label": "16:9" },
+                { "value": "9:16", "label": "9:16 (לאורך)" },
+                { "value": "4:5", "label": "4:5" },
+                { "value": "1:1", "label": "1:1" },
+                { "value": "2.39:1", "label": "סינמסקופ 2.39:1" }
+              ]
+            }
+          ]
+        },
+        { "key": "more", "label": "עוד קליפים", "type": "text", "multiline": true, "maxLength": 300, "help": "**טקסט** = מודגש." },
+        { "key": "quotes", "label": "ציטוטים", "type": "text", "multiline": true, "maxLength": 300 },
+        { "key": "cta", "label": "קישור בסוף", "type": "link", "help": "בוחר מראש \"קליפ\" בטופס הבריף." },
+        { "key": "missingVideo", "label": "הטקסט במסגרת של קליפ בלי קישור", "type": "text", "maxLength": 80, "scope": "design" },
+        { "key": "anchor", "label": "עוגן", "type": "text", "ltr": true, "maxLength": 30, "scope": "design", "help": "השם אחרי # בכתובת. קישורים בתפריט ובכפתורים מפנים אליו, אז משנים רק יחד איתם." }
+      ],
+      "preset": { "anchor": "clips", "slate": "קליפים", "title": "קליפים", "missingVideo": "[חסר: קישור לקליפ]" }
+    },
+    "films": {
+      "label": "סרטים",
+      "description": "קרדיטים של סרטים והפקה בפועל. בכוונה בלי כתום.",
+      "icon": "list",
+      "max": 1,
+      "fields": [
+        { "key": "slate", "label": "תווית", "type": "text", "maxLength": 30, "help": "התווית ליד מספר הסצנה. ריק = הסקשן לא ממוספר." },
+        { "key": "title", "label": "כותרת", "type": "text", "maxLength": 40 },
+        { "key": "intro", "label": "פסקת פתיחה", "type": "text", "multiline": true, "maxLength": 300 },
+        {
+          "key": "english",
+          "label": "פסקה באנגלית",
+          "type": "group",
+          "fields": [
+            { "key": "lead", "label": "משפט מודגש", "type": "text", "ltr": true, "maxLength": 60 },
+            { "key": "text", "label": "המשך", "type": "text", "ltr": true, "multiline": true, "maxLength": 220 },
+            { "key": "note", "label": "הערה בעברית", "type": "text", "maxLength": 160 }
+          ]
+        },
+        {
+          "key": "items",
+          "label": "סרטים",
+          "type": "list",
+          "itemLabel": "סרט",
+          "titleKey": "title",
+          "max": 20,
+          "fields": [
+            { "key": "year", "label": "שנה", "type": "text", "ltr": true, "maxLength": 9 },
+            { "key": "title", "label": "שם הסרט", "type": "text", "maxLength": 50 },
+            { "key": "titleEn", "label": "שם באנגלית", "type": "text", "ltr": true, "maxLength": 50 },
+            { "key": "role", "label": "התפקיד שלי", "type": "text", "maxLength": 100 },
+            { "key": "meta", "label": "פרטים", "type": "list", "itemLabel": "שורה", "max": 5, "item": { "key": "line", "label": "שורה", "type": "text", "maxLength": 220 } }
+          ]
+        },
+        { "key": "anchor", "label": "עוגן", "type": "text", "ltr": true, "maxLength": 30, "scope": "design", "help": "השם אחרי # בכתובת. קישורים בתפריט ובכפתורים מפנים אליו, אז משנים רק יחד איתם." }
+      ],
+      "preset": { "anchor": "films", "slate": "סרטים", "title": "סרטים" }
+    },
+    "ads": {
+      "label": "פרסומות",
+      "description": "פרסומות ופרומו, ומה מקבלים בסוף.",
+      "icon": "megaphone",
+      "max": 1,
+      "fields": [
+        { "key": "slate", "label": "תווית", "type": "text", "maxLength": 30, "help": "התווית ליד מספר הסצנה. ריק = הסקשן לא ממוספר." },
+        { "key": "title", "label": "כותרת", "type": "text", "multiline": true, "maxLength": 60, "help": "Enter = שורה חדשה בכותרת." },
+        { "key": "text", "label": "טקסט", "type": "text", "multiline": true, "maxLength": 260 },
+        { "key": "credits", "label": "קרדיטים", "type": "text", "multiline": true, "maxLength": 200, "help": "**טקסט** = מודגש." },
+        { "key": "logos", "label": "לקוחות", "type": "text", "multiline": true, "maxLength": 200 },
+        {
+          "key": "deliverables",
+          "label": "מה מקבלים בסוף",
+          "type": "group",
+          "fields": [
+            { "key": "title", "label": "כותרת", "type": "text", "maxLength": 40 },
+            { "key": "items", "label": "תוצרים", "type": "list", "itemLabel": "תוצר", "max": 10, "item": { "key": "item", "label": "תוצר", "type": "text", "maxLength": 120 } },
+            { "key": "note", "label": "הערה", "type": "text", "multiline": true, "maxLength": 220, "help": "**טקסט** = מודגש." }
+          ]
+        },
+        { "key": "anchor", "label": "עוגן", "type": "text", "ltr": true, "maxLength": 30, "scope": "design", "help": "השם אחרי # בכתובת. קישורים בתפריט ובכפתורים מפנים אליו, אז משנים רק יחד איתם." }
+      ],
+      "preset": { "anchor": "ads", "slate": "פרסומות ופרומו", "title": "פרסומות" }
+    },
+    "manifesto": {
+      "label": "משפט אחד",
+      "description": "משפט שנחשף מילה אחר מילה בגלילה.",
+      "icon": "quote",
+      "fields": [
+        { "key": "text", "label": "המשפט", "type": "text", "maxLength": 120 },
+        { "key": "accentFrom", "label": "מאיזו מילה בכתום", "type": "text", "maxLength": 20, "scope": "design", "help": "מילה מהמשפט, בדיוק כפי שהיא כתובה בו. ממנה ועד הסוף המשפט בכתום. ריק = בלי כתום." },
+        { "key": "by", "label": "חתימה", "type": "text", "maxLength": 40 },
+        { "key": "ariaLabel", "label": "תיאור לקוראי מסך", "type": "text", "maxLength": 80 }
+      ],
+      "preset": { "text": "משפט אחד שאומר הכול.", "ariaLabel": "במשפט אחד" }
+    },
+    "process": {
+      "label": "איך זה עובד",
+      "description": "שלבי ההפקה כרצועת פילם שזזה לצד בגלילה.",
+      "icon": "list",
+      "max": 1,
+      "fields": [
+        { "key": "slate", "label": "תווית", "type": "text", "maxLength": 30, "help": "התווית ליד מספר הסצנה. ריק = הסקשן לא ממוספר." },
+        { "key": "title", "label": "כותרת", "type": "text", "maxLength": 80 },
+        {
+          "key": "steps",
+          "label": "שלבים",
+          "type": "list",
+          "itemLabel": "שלב",
+          "titleKey": "title",
+          "max": 8,
+          "fields": [
+            { "key": "title", "label": "שם השלב", "type": "text", "maxLength": 30 },
+            { "key": "text", "label": "טקסט", "type": "text", "multiline": true, "maxLength": 200, "help": "**טקסט** = מודגש." },
+            { "key": "time", "label": "זמן", "type": "text", "maxLength": 60 },
+            { "key": "highlight", "label": "פריים מודגש בכתום", "type": "boolean", "scope": "design" }
+          ]
+        },
+        { "key": "trackLabel", "label": "תיאור הרצועה לקוראי מסך", "type": "text", "maxLength": 80 },
+        { "key": "prevLabel", "label": "כפתור \"הקודם\" לקוראי מסך", "type": "text", "maxLength": 30 },
+        { "key": "nextLabel", "label": "כפתור \"הבא\" לקוראי מסך", "type": "text", "maxLength": 30 },
+        { "key": "anchor", "label": "עוגן", "type": "text", "ltr": true, "maxLength": 30, "scope": "design", "help": "השם אחרי # בכתובת. קישורים בתפריט ובכפתורים מפנים אליו, אז משנים רק יחד איתם." }
+      ],
+      "preset": { "anchor": "process", "slate": "איך זה עובד", "title": "איך זה עובד", "trackLabel": "שלבי ההפקה, גלילה לצדדים", "prevLabel": "לשלב הקודם", "nextLabel": "לשלב הבא" }
+    },
+    "about": {
+      "label": "מי מפיק",
+      "description": "מתנאל: תמונה, סיפור קצר, עובדות וקישורים.",
+      "icon": "user-round",
+      "max": 1,
+      "fields": [
+        { "key": "slate", "label": "תווית", "type": "text", "maxLength": 30, "help": "התווית ליד מספר הסצנה. ריק = הסקשן לא ממוספר." },
+        { "key": "title", "label": "כותרת (שם)", "type": "text", "maxLength": 40 },
+        { "key": "lede", "label": "שורת פתיחה", "type": "text", "maxLength": 120 },
+        { "key": "paragraphs", "label": "פסקאות", "type": "list", "itemLabel": "פסקה", "max": 6, "item": { "key": "paragraph", "label": "פסקה", "type": "text", "multiline": true, "maxLength": 500 } },
+        { "key": "facts", "label": "עובדות", "type": "list", "itemLabel": "עובדה", "max": 6, "item": { "key": "fact", "label": "עובדה", "type": "text", "maxLength": 120 } },
+        {
+          "key": "links",
+          "label": "קישורים",
+          "type": "list",
+          "itemLabel": "קישור",
+          "titleKey": "label",
+          "max": 4,
+          "fields": [
+            { "key": "label", "label": "טקסט", "type": "text", "ltr": true, "maxLength": 40 },
+            { "key": "href", "label": "כתובת", "type": "text", "ltr": true, "maxLength": 300 }
+          ]
+        },
+        { "key": "photo", "label": "תמונה", "type": "image", "aspect": "4:5", "help": "מתנאל על סט, לא בסטודיו. בטקסט החלופי: מה רואים בתמונה, למשל \"מתנאל גוטליב על סט צילום\"." },
+        { "key": "photoMissing", "label": "הטקסט במסגרת כשאין תמונה", "type": "text", "maxLength": 120, "scope": "design" },
+        {
+          "key": "photoAspect",
+          "label": "יחס התמונה",
+          "type": "select",
+          "scope": "design",
+          "options": [
+            { "value": "4:5", "label": "4:5" },
+            { "value": "3:4", "label": "3:4" },
+            { "value": "1:1", "label": "1:1" },
+            { "value": "16:9", "label": "16:9" }
+          ]
+        },
+        { "key": "anchor", "label": "עוגן", "type": "text", "ltr": true, "maxLength": 30, "scope": "design", "help": "השם אחרי # בכתובת. קישורים בתפריט ובכפתורים מפנים אליו, אז משנים רק יחד איתם." }
+      ],
+      "preset": { "anchor": "about", "slate": "מי מפיק", "title": "מתנאל גוטליב", "photoMissing": "[חסר: תמונה]", "photoAspect": "4:5" }
+    },
+    "faq": {
+      "label": "שאלות",
+      "description": "שאלות ותשובות שנפתחות בלחיצה.",
+      "icon": "circle-help",
+      "max": 1,
+      "fields": [
+        { "key": "slate", "label": "תווית", "type": "text", "maxLength": 30, "help": "התווית ליד מספר הסצנה. ריק = הסקשן לא ממוספר." },
+        { "key": "title", "label": "כותרת", "type": "text", "maxLength": 80 },
+        {
+          "key": "items",
+          "label": "שאלות",
+          "type": "list",
+          "itemLabel": "שאלה",
+          "titleKey": "q",
+          "max": 20,
+          "fields": [
+            { "key": "q", "label": "שאלה", "type": "text", "maxLength": 100 },
+            { "key": "a", "label": "תשובה", "type": "text", "multiline": true, "maxLength": 500, "help": "**טקסט** = מודגש." }
+          ]
+        },
+        { "key": "anchor", "label": "עוגן", "type": "text", "ltr": true, "maxLength": 30, "scope": "design", "help": "השם אחרי # בכתובת. קישורים בתפריט ובכפתורים מפנים אליו, אז משנים רק יחד איתם." }
+      ],
+      "preset": { "anchor": "faq", "slate": "שאלות", "title": "שאלות נפוצות" }
+    },
+    "contact": {
+      "label": "בריף",
+      "description": "טופס בריף בשלבים: התשובות נפתחות כהודעת וואטסאפ מוכנה.",
+      "icon": "mail",
+      "max": 1,
+      "fields": [
+        { "key": "slate", "label": "תווית", "type": "text", "maxLength": 30, "help": "התווית ליד מספר הסצנה. ריק = הסקשן לא ממוספר." },
+        { "key": "title", "label": "כותרת", "type": "text", "multiline": true, "maxLength": 50, "help": "Enter = שורה חדשה בכותרת." },
+        { "key": "text", "label": "טקסט", "type": "text", "multiline": true, "maxLength": 200 },
+        { "key": "direct", "label": "שורת פרטים ישירים", "type": "text", "maxLength": 160 },
+        { "key": "face", "label": "תמונת פנים", "type": "image", "aspect": "1:1", "help": "בטקסט החלופי: מה רואים בתמונה, למשל \"מתנאל גוטליב\"." },
+        { "key": "faceMissing", "label": "הטקסט במסגרת כשאין תמונה", "type": "text", "maxLength": 120, "scope": "design" },
+        {
+          "key": "form",
+          "label": "טופס הבריף",
+          "type": "group",
+          "fields": [
+            {
+              "key": "steps",
+              "label": "שלבים",
+              "type": "list",
+              "itemLabel": "שלב",
+              "titleKey": "legend",
+              "max": 6,
+              "fields": [
+                { "key": "legend", "label": "כותרת השלב", "type": "text", "maxLength": 50 },
+                { "key": "note", "label": "הערה", "type": "text", "maxLength": 160 },
+                {
+                  "key": "fields",
+                  "label": "שדות",
+                  "type": "list",
+                  "itemLabel": "שדה",
+                  "titleKey": "label",
+                  "max": 8,
+                  "fields": [
+                    { "key": "label", "label": "תווית", "type": "text", "maxLength": 60 },
+                    { "key": "options", "label": "אפשרויות", "type": "list", "itemLabel": "אפשרות", "max": 10, "help": "לשדות בחירה. הקישור \"רוצים קליפ\" בסקשן הקליפים בוחר מראש את האפשרות \"קליפ\".", "item": { "key": "option", "label": "אפשרות", "type": "text", "maxLength": 40 } },
+                    { "key": "placeholder", "label": "טקסט דוגמה בתוך השדה", "type": "text", "maxLength": 80 },
+                    { "key": "summary", "label": "השם בהודעת הוואטסאפ", "type": "text", "maxLength": 30 },
+                    {
+                      "key": "kind",
+                      "label": "סוג",
+                      "type": "select",
+                      "scope": "design",
+                      "options": [
+                        { "value": "text", "label": "שורת טקסט" },
+                        { "value": "textarea", "label": "טקסט ארוך" },
+                        { "value": "choice", "label": "בחירה אחת (כפתורים)" },
+                        { "value": "checks", "label": "כמה אפשרויות (תיבות)" },
+                        { "value": "check", "label": "תיבת סימון אחת" },
+                        { "value": "select", "label": "רשימה נפתחת" },
+                        { "value": "tel", "label": "טלפון" },
+                        { "value": "email", "label": "מייל" },
+                        { "value": "url", "label": "קישור" }
+                      ]
+                    },
+                    { "key": "name", "label": "מזהה", "type": "text", "ltr": true, "maxLength": 30, "scope": "design", "help": "באנגלית, ייחודי בטופס." },
+                    { "key": "required", "label": "חובה", "type": "boolean", "scope": "design" },
+                    { "key": "half", "label": "חצי רוחב", "type": "boolean", "scope": "design", "help": "שני שדות רצופים בחצי רוחב יושבים באותה שורה." },
+                    { "key": "autocomplete", "label": "השלמה אוטומטית", "type": "text", "ltr": true, "maxLength": 30, "scope": "design", "placeholder": "name / tel / email" },
+                    { "key": "value", "label": "הערך כשמסמנים", "type": "text", "maxLength": 30, "scope": "design" },
+                    { "key": "checked", "label": "מסומן מראש", "type": "boolean", "scope": "design" },
+                    {
+                      "key": "lang",
+                      "label": "שפת התווית",
+                      "type": "select",
+                      "scope": "design",
+                      "options": [
+                        { "value": "", "label": "כמו הדף" },
+                        { "value": "en", "label": "אנגלית" }
+                      ]
+                    }
+                  ]
+                },
+                { "key": "error", "label": "הודעת שגיאה", "type": "text", "maxLength": 120 }
+              ]
+            },
+            { "key": "stepLabel", "label": "מונה השלבים", "type": "text", "maxLength": 40, "help": "{n} = השלב הנוכחי, {total} = מספר השלבים." },
+            { "key": "prev", "label": "כפתור חזרה", "type": "text", "maxLength": 20 },
+            { "key": "next", "label": "כפתור הבא", "type": "text", "maxLength": 20 },
+            { "key": "submit", "label": "כפתור שליחה", "type": "text", "maxLength": 30 },
+            {
+              "key": "done",
+              "label": "אחרי השליחה",
+              "type": "group",
+              "fields": [
+                { "key": "title", "label": "כותרת", "type": "text", "maxLength": 40 },
+                { "key": "text", "label": "טקסט", "type": "text", "multiline": true, "maxLength": 200 }
+              ]
+            }
+          ]
+        },
+        { "key": "anchor", "label": "עוגן", "type": "text", "ltr": true, "maxLength": 30, "scope": "design", "help": "השם אחרי # בכתובת. קישורים בתפריט ובכפתורים מפנים אליו, אז משנים רק יחד איתם." }
+      ],
+      "preset": {
+        "anchor": "contact",
+        "slate": "בריף",
+        "title": "בואו נדבר",
+        "faceMissing": "[חסר: תמונה]",
+        "form": {
+          "stepLabel": "שלב {n} מתוך {total}",
+          "prev": "חזרה",
+          "next": "הבא",
+          "submit": "שליחה",
+          "steps": [
+            {
+              "legend": "איך חוזרים אליכם?",
+              "error": "צריך שם וטלפון כדי לחזור אליכם.",
+              "fields": [
+                { "kind": "text", "name": "name", "label": "שם", "summary": "שם", "required": true, "autocomplete": "name", "half": true },
+                { "kind": "tel", "name": "phone", "label": "טלפון", "summary": "טלפון", "required": true, "autocomplete": "tel", "half": true }
+              ]
+            }
+          ],
+          "done": { "title": "קיבלתי.", "text": "נפתח וואטסאפ עם ההודעה, רק ללחוץ ״שלח״." }
+        }
+      }
+    }
+  }
+}
