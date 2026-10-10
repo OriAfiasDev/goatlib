@@ -9,6 +9,31 @@ content/
   sections/<id>.json   one file per section; "type" picks the template
 ```
 
+## Edited in afias studio
+
+The client edits the site in afias studio, which now holds the content. The files here are the
+offline copy (and the shapes the studio's document maps to); the deployed `content/` is
+written by the build from the studio:
+
+1. "פרסום" in the studio sends a `repository_dispatch` (`afias-publish`) to this repo.
+2. `.github/workflows/deploy.yml` builds with `CONTENT_SOURCE=http`: `.github/scripts/content.mjs`
+   fetches the published document, `_afias/content.js` maps it to these files, and every section
+   is rendered once as a check. If the studio can't be reached the build fails and the live site
+   stays as it was. The run reports building / ready / failed back to the studio.
+3. The page itself is unchanged: `app.js` still loads `content/*.json` from the site.
+
+| File | Role |
+|---|---|
+| `afias/blueprint.json` | What the editor exposes: fields, labels, limits, design-only fields. Paste changes into the studio (ניהול → סכמה ותוכן). |
+| `_afias/content.js` | Studio document ⇄ these files. The one place their shapes meet. |
+| `_afias/preview.html` | The editor's live preview: renders drafts with these templates (noindex). |
+
+`npm run build` alone uses these local files. Against the studio:
+
+```bash
+CONTENT_SOURCE=http CONTENT_URL=https://studio-beryl-seven-51.vercel.app/api/v1/sites/goatlib STUDIO_URL=https://studio-beryl-seven-51.vercel.app npm run build
+```
+
 ## How a page is built
 
 1. `assets/js/app.js` loads `site.json`, applies `theme.colors` as CSS variables, then loads
@@ -35,7 +60,7 @@ HTML is escaped, so editors cannot break the page. Hebrew/English mixing is hand
 
 | Field | Notes |
 |---|---|
-| `meta.title`, `meta.description`, `meta.ogImage` | Also hard-coded in `index.html` for crawlers; the CMS should write both. |
+| `meta.title`, `meta.description`, `meta.ogTitle`, `meta.ogDescription`, `meta.ogImage` | Repeated in `index.html` for crawlers and link previews; the build writes them there (with `theme.colors.set` as the theme colour). |
 | `theme.colors` | `set` (background), `ink` (outlines), `chalk` (text), `amber` (accent), `smoke` (meta text). All tints are derived from these. Keep `ink` on `amber` for text: white on amber fails contrast. |
 | `brand` | `name`, `suffix`, `mark` (logo SVG path), `homeLabel` (screen-reader label). |
 | `contact.whatsappNumber` | International, digits only, e.g. `972501234567`. Empty = WhatsApp links fall back to the form. |

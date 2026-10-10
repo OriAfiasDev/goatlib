@@ -10,8 +10,12 @@
  * - When SITE_URL is set (CI passes the GitHub Pages URL), makes og:image /
  *   twitter:image / JSON-LD images absolute and adds canonical + og:url.
  * - Writes .nojekyll so Pages serves every file untouched.
+ * - Writes content/ from the content source (./content.mjs: this repo's files, or the afias
+ *   studio in CI) and bakes what index.html repeats for crawlers (title, description, share
+ *   texts, theme colour) plus the stylesheet's colour defaults from that same content.
  *
  * Usage: SITE_URL=https://user.github.io/repo/ node .github/scripts/build.mjs
+ *        CONTENT_SOURCE=http CONTENT_URL=https://studio…/api/v1/sites/goatlib STUDIO_URL=https://studio… node .github/scripts/build.mjs
  */
 import { mkdir, readFile, readdir, rm, writeFile, copyFile, stat } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
@@ -19,10 +23,12 @@ import path from 'node:path';
 import { gzipSync } from 'node:zlib';
 import { transform } from 'esbuild';
 import { minify as minifyHtml } from 'html-minifier-terser';
+import { loadContent } from './content.mjs';
 
 const ROOT = process.cwd();
 const OUT = path.join(ROOT, process.env.OUT_DIR || 'dist');
 const SITE_URL = process.env.SITE_URL ? process.env.SITE_URL.replace(/\/+$/, '') + '/' : '';
+const STUDIO_URL = (process.env.STUDIO_URL || '').replace(/\/+$/, '');
 const CSS_TARGET = ['chrome111', 'edge111', 'firefox114', 'safari16.4'];
 const INLINE_CSS_LIMIT = 150 * 1024;
 
@@ -39,6 +45,7 @@ const extraIgnore = existsSync(path.join(ROOT, '.deployignore'))
 function ignored(rel) {
   const parts = rel.split('/');
   const name = parts[parts.length - 1];
+  if (parts[0] === 'content') return true; // written from the content source below
   if (parts.some((p) => p.startsWith('.') && p !== '.well-known')) return true;
   if (parts.some((p) => IGNORE_NAMES.has(p))) return true;
   if (IGNORE_EXT.has(path.extname(name).toLowerCase())) return true;
@@ -68,6 +75,36 @@ function attr(tag, name) {
   return m ? (m[1] ?? m[2] ?? m[3]) : undefined;
 }
 const relFrom = (fromFile, toFile) => path.posix.relative(path.posix.dirname(fromFile), toFile) || path.posix.basename(toFile);
+const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+/* ---------- content baked into the page ---------- */
+
+// The theme's colours become the stylesheet's defaults, so the first paint already uses them
+// (app.js applies the same values from site.json once it runs).
+function themed(css) {
+  const colors = Object.entries(content.site.theme?.colors || {});
+  return css.replace(/:root\s*\{[^}]*\}/, (block) =>
+    colors.reduce((b, [name, value]) => b.replace(new RegExp(`(--${name}\\s*:\\s*)[^;}]+`), `$1${value}`), block));
+}
+
+// index.html repeats the meta from site.json for crawlers and link previews, and preloads the
+// first section's file; keep both in step with the content.
+function bakeContent(html) {
+  const { meta = {}, theme = {} } = content.site;
+  const values = {
+    description: meta.description,
+    'og:title': meta.ogTitle,
+    'og:description': meta.ogDescription,
+    'og:image': meta.ogImage,
+    'theme-color': theme.colors?.set,
+  };
+  if (meta.title) html = html.replace(/<title>[\s\S]*?<\/title>/i, `<title>${esc(meta.title)}</title>`);
+  html = html.replace(/<meta\b[^>]*>/gi, (tag) => {
+    const value = values[attr(tag, 'property') || attr(tag, 'name')];
+    return value ? tag.replace(/\scontent\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/i, ` content="${esc(value)}"`) : tag;
+  });
+  return html.replace(/(<link\b[^>]*href=["'])content\/sections\/[\w-]+\.json/i, `$1content/sections/${content.sections[0].id}.json`);
+}
 
 async function minifyCss(css) {
   return (await transform(css, { loader: 'css', minify: true, target: CSS_TARGET, legalComments: 'none' })).code.trim();
@@ -116,6 +153,11 @@ async function selfHostGoogleFonts(href) {
 
 async function buildHtml(file, html) {
   const notes = [];
+  const noindex = /<meta\b[^>]*name=["']?robots["']?[^>]*noindex/i.test(html);
+
+  // 0. Content: the page's meta, and the studio the editor's preview page talks to.
+  if (file === 'index.html') html = bakeContent(html);
+  if (file === '_afias/preview.html') html = html.replace('data-studio=""', `data-studio="${esc(STUDIO_URL)}"`);
 
   // 1. Stylesheets: inline local ones, self-host Google Fonts.
   const links = html.match(/<link\b[^>]*>/gi) || [];
@@ -149,7 +191,7 @@ async function buildHtml(file, html) {
       const cssFile = path.posix.normalize(path.posix.join(path.posix.dirname(file), href.split(/[?#]/)[0]));
       const p = path.join(ROOT, cssFile);
       if (existsSync(p) && (await stat(p)).size <= INLINE_CSS_LIMIT) {
-        const css = await minifyCss(rebaseCssUrls(await readFile(p, 'utf8'), cssFile, file));
+        const css = await minifyCss(themed(rebaseCssUrls(await readFile(p, 'utf8'), cssFile, file)));
         html = html.replace(tag, `<style${mediaAttr}>${css}</style>`);
         notes.push(`inlined ${cssFile}`);
       }
@@ -166,7 +208,7 @@ async function buildHtml(file, html) {
       return tag.replace(content, new URL(content, pageUrl).href);
     });
     const head = [];
-    if (!/<link\b[^>]*rel=["']?canonical/i.test(html)) head.push(`<link rel="canonical" href="${pageUrl}">`);
+    if (!noindex && !/<link\b[^>]*rel=["']?canonical/i.test(html)) head.push(`<link rel="canonical" href="${pageUrl}">`);
     if (/property=["']og:/i.test(html) && !/property=["']og:url/i.test(html)) head.push(`<meta property="og:url" content="${pageUrl}">`);
     if (head.length) html = html.replace(/<\/head>/i, `${head.join('')}</head>`);
 
@@ -209,6 +251,9 @@ async function buildHtml(file, html) {
 
 /* ---------- run ---------- */
 
+const content = await loadContent(ROOT);
+console.log(`\nContent: ${content.label}`);
+
 await rm(OUT, { recursive: true, force: true });
 await mkdir(OUT, { recursive: true });
 
@@ -226,7 +271,7 @@ for (const file of files) {
   let notes = [];
 
   if (ext === '.html') ({ html: out, notes } = await buildHtml(file, await readFile(src, 'utf8')));
-  else if (ext === '.css') out = await minifyCss(await readFile(src, 'utf8'));
+  else if (ext === '.css') out = await minifyCss(themed(await readFile(src, 'utf8')));
   else if (ext === '.js' || ext === '.mjs') out = await minifyJs(await readFile(src, 'utf8'));
   else if (ext === '.json' || ext === '.webmanifest') {
     const raw = await readFile(src, 'utf8');
@@ -242,10 +287,19 @@ for (const file of files) {
     if (/\.(jpe?g|png|webp|avif|gif)$/i.test(ext) && before > 400 * 1024) warnings.push(`${file} is ${(before / 1024).toFixed(0)} KB — consider resizing/compressing`);
   }
 }
+
+// content/: site.json and one file per visible section, in the shapes app.js loads.
+const contentFiles = [['content/site.json', content.site], ...content.sections.map((s) => [`content/sections/${s.id}.json`, s.data])];
+await mkdir(path.join(OUT, 'content/sections'), { recursive: true });
+for (const [file, data] of contentFiles) {
+  const out = JSON.stringify(data);
+  await writeFile(path.join(OUT, file), out);
+  rows.push([file, Buffer.byteLength(out), Buffer.byteLength(out), gzipSync(out).length, '']);
+}
 await writeFile(path.join(OUT, '.nojekyll'), '');
 
 const kb = (n) => `${(n / 1024).toFixed(1)} KB`;
-console.log(`\nBuilt ${files.length} files → ${path.relative(ROOT, OUT)}/${SITE_URL ? `  (SITE_URL ${SITE_URL})` : ''}\n`);
+console.log(`\nBuilt ${files.length + contentFiles.length} files → ${path.relative(ROOT, OUT)}/${SITE_URL ? `  (SITE_URL ${SITE_URL})` : ''}\n`);
 for (const [f, b, a, g, n] of rows) console.log(`  ${f.padEnd(34)} ${kb(b).padStart(9)} → ${kb(a).padStart(9)}  (gzip ${kb(g)})${n ? `  · ${n}` : ''}`);
 if (warnings.length) console.log(`\nWarnings:\n  ${warnings.join('\n  ')}`);
 if (!files.includes('index.html')) console.log('\nWarning: no index.html at the project root — Pages will 404 at the site URL.');
