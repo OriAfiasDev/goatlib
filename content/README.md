@@ -22,6 +22,11 @@ written by the build from the studio:
    stays as it was. The run reports building / ready / failed back to the studio.
 3. The page itself is unchanged: `app.js` still loads `content/*.json` from the site.
 
+The deployed page also carries the studio's visit counter (`kit/v1/beacon.js`: page views and
+WhatsApp / phone / email clicks, no cookies). The build adds it only when `STUDIO_URL` and
+`SITE_SLUG` are set, so local builds count nothing. The brief's submit button has
+`data-cta="whatsapp"` because it opens WhatsApp from a button, not a `wa.me` link.
+
 | File | Role |
 |---|---|
 | `afias/blueprint.json` | What the editor exposes: fields, labels, limits, design-only fields. Paste changes into the studio (ניהול → סכמה ותוכן). |

@@ -29,6 +29,7 @@ const ROOT = process.cwd();
 const OUT = path.join(ROOT, process.env.OUT_DIR || 'dist');
 const SITE_URL = process.env.SITE_URL ? process.env.SITE_URL.replace(/\/+$/, '') + '/' : '';
 const STUDIO_URL = (process.env.STUDIO_URL || '').replace(/\/+$/, '');
+const SITE_SLUG = process.env.SITE_SLUG || '';
 const CSS_TARGET = ['chrome111', 'edge111', 'firefox114', 'safari16.4'];
 const INLINE_CSS_LIMIT = 150 * 1024;
 
@@ -76,6 +77,12 @@ function attr(tag, name) {
 }
 const relFrom = (fromFile, toFile) => path.posix.relative(path.posix.dirname(fromFile), toFile) || path.posix.basename(toFile);
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+// The studio's visit counter (page views and contact clicks; no cookies, nothing personal),
+// on the deployed page only: local builds have no STUDIO_URL / SITE_SLUG and count nothing.
+const BEACON = STUDIO_URL && SITE_SLUG
+  ? `<script defer src="${esc(STUDIO_URL)}/kit/v1/beacon.js" data-endpoint="${esc(`${STUDIO_URL}/api/v1/sites/${SITE_SLUG}/events`)}"></script>`
+  : '';
 
 /* ---------- content baked into the page ---------- */
 
@@ -155,8 +162,8 @@ async function buildHtml(file, html) {
   const notes = [];
   const noindex = /<meta\b[^>]*name=["']?robots["']?[^>]*noindex/i.test(html);
 
-  // 0. Content: the page's meta, and the studio the editor's preview page talks to.
-  if (file === 'index.html') html = bakeContent(html);
+  // 0. Content: the page's meta, the visit counter, and the studio the editor's preview page talks to.
+  if (file === 'index.html') html = bakeContent(html).replace(/<\/head>/i, `${BEACON}</head>`);
   if (file === '_afias/preview.html') html = html.replace('data-studio=""', `data-studio="${esc(STUDIO_URL)}"`);
 
   // 1. Stylesheets: inline local ones, self-host Google Fonts.

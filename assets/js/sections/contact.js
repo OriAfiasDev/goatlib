@@ -108,7 +108,7 @@ export function render(d, ctx) {
       <div class="brief__nav">
         <button class="btn btn--ghost-ink" type="button" data-prev hidden>${afText(ctx, 'form.prev', form.prev, esc(form.prev))}</button>
         <button class="btn btn--ink" type="button" data-next>${afText(ctx, 'form.next', form.next, esc(form.next))}</button>
-        <button class="btn btn--ink" type="submit" data-submit hidden>${afText(ctx, 'form.submit', form.submit, esc(form.submit))}</button>
+        <button class="btn btn--ink" type="submit" data-submit${waLink(site, '') ? ' data-cta="whatsapp"' : ''} hidden>${afText(ctx, 'form.submit', form.submit, esc(form.submit))}</button>
       </div>
       <div class="brief__done" data-done hidden tabindex="-1">
         <p class="brief__done-title"${af(ctx, 'form.done.title', form.done?.title)}>${esc(form.done?.title)}</p>
