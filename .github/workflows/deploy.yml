@@ -1,9 +1,18 @@
 name: Deploy to GitHub Pages
 
+# The content comes from afias studio (CONTENT_URL below) on every run: a push only changes
+# code, the studio holds the copy. Publishing in the studio sends the repository_dispatch
+# "afias-publish"; those runs report building → ready/failed back to the studio. If the studio
+# can't be reached, the build fails and the live site stays as it was.
+#
+# Repo settings: variables STUDIO_URL and SITE_SLUG, secret AFIAS_DEPLOY_TOKEN.
+
 on:
   push:
     branches: [main]
   workflow_dispatch:
+  repository_dispatch:
+    types: [afias-publish]
 
 permissions:
   contents: read
@@ -14,10 +23,26 @@ concurrency:
   group: pages
   cancel-in-progress: true
 
+env:
+  STUDIO_URL: ${{ vars.STUDIO_URL }}
+  SITE_SLUG: ${{ vars.SITE_SLUG }}
+  CONTENT_SOURCE: http
+  CONTENT_URL: ${{ vars.STUDIO_URL }}/api/v1/sites/${{ vars.SITE_SLUG }}
+  DEPLOYMENT_ID: ${{ github.event.client_payload.deployment }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Tell the studio we're building
+        if: github.event_name == 'repository_dispatch'
+        env:
+          AFIAS_DEPLOY_TOKEN: ${{ secrets.AFIAS_DEPLOY_TOKEN }}
+        run: |
+          curl -fsS -X POST "$STUDIO_URL/api/v1/sites/$SITE_SLUG/deployments" \
+            -H "authorization: Bearer $AFIAS_DEPLOY_TOKEN" -H "content-type: application/json" \
+            -d "{\"status\":\"building\",\"deployment\":\"$DEPLOYMENT_ID\"}" || true
+
       - uses: actions/checkout@v7
 
       - uses: actions/setup-node@v7
@@ -30,7 +55,8 @@ jobs:
       - id: pages
         uses: actions/configure-pages@v6
 
-      # Minified, font-self-hosted build in dist/, with absolute OG/canonical URLs.
+      # Studio content → minified, font-self-hosted build in dist/, with absolute OG/canonical
+      # URLs and the editor's live preview page (_afias/preview.html).
       - run: npm run build
         env:
           SITE_URL: ${{ steps.pages.outputs.base_url }}
@@ -48,3 +74,24 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v5
+
+      - name: Tell the studio it's live
+        if: success() && github.event_name == 'repository_dispatch'
+        env:
+          AFIAS_DEPLOY_TOKEN: ${{ secrets.AFIAS_DEPLOY_TOKEN }}
+        run: |
+          curl -fsS -X POST "$STUDIO_URL/api/v1/sites/$SITE_SLUG/deployments" \
+            -H "authorization: Bearer $AFIAS_DEPLOY_TOKEN" -H "content-type: application/json" \
+            -d "{\"status\":\"ready\",\"deployment\":\"$DEPLOYMENT_ID\"}" || true
+
+  report-failure:
+    needs: [build, deploy]
+    if: failure() && github.event_name == 'repository_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          AFIAS_DEPLOY_TOKEN: ${{ secrets.AFIAS_DEPLOY_TOKEN }}
+        run: |
+          curl -fsS -X POST "$STUDIO_URL/api/v1/sites/$SITE_SLUG/deployments" \
+            -H "authorization: Bearer $AFIAS_DEPLOY_TOKEN" -H "content-type: application/json" \
+            -d "{\"status\":\"failed\",\"deployment\":\"$DEPLOYMENT_ID\",\"message\":\"הבנייה נכשלה ב-GitHub Actions. האתר החי לא השתנה.\"}" || true
