@@ -28,10 +28,26 @@ export function ratio(aspect = '16:9') {
 // Section label like "SC 03"
 export const scLabel = (n) => `SC ${String(n).padStart(2, '0')}`;
 
-export function slate(label, sc, modifier = '') {
+export function slate(label, sc, modifier = '', ctx) {
   if (!label) return '';
-  return `<p class="slate${modifier ? ` slate--${modifier}` : ''}"><span dir="ltr">${esc(sc)}</span> ${esc(label)}</p>`;
+  return `<p class="slate${modifier ? ` slate--${modifier}` : ''}"><span dir="ltr">${esc(sc)}</span> ${afText(ctx, 'slate', label, esc(label))}</p>`;
 }
+
+// Preview only: the attributes the afias studio editor reads to focus a field when it's clicked,
+// and to edit plain text in place (not text with **bold**: editing it would drop the markers).
+// ctx.annotate is set by /_afias/preview.html alone, so the public page renders without them.
+export function af(ctx, path, value, { multiline = false } = {}) {
+  if (!ctx?.annotate) return '';
+  const editable = typeof value === 'string' && !value.includes('**');
+  return ` data-afias-field="${esc(path)}"${editable ? ' data-afias-inline="text"' : ''}${editable && multiline ? ' data-afias-multiline="true"' : ''}`;
+}
+
+// Text that shares its element with other markup gets an element of its own, in the preview only.
+// Not a span: rules like `.slate span` would style it.
+export const afText = (ctx, path, value, html) => (ctx?.annotate ? `<af-text${af(ctx, path, value)}>${html}</af-text>` : html);
+
+// A list item's segment in a field path: its studio _id, or its position.
+export const key = (item, i) => item?._id ?? i;
 
 // YouTube / Vimeo URL (or bare YouTube id) → { provider, id }
 export function parseVideo(url = '') {

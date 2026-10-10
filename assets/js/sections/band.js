@@ -1,14 +1,14 @@
-import { esc } from '../core/format.js';
+import { af, esc } from '../core/format.js';
 
 const LATIN = /^[\x00-\x7F]+$/;
 
-export function render(d) {
+export function render(d, ctx) {
   const items = (d.items || [])
-    .map((t) => `<li${LATIN.test(t) ? ' dir="ltr"' : ''}>${esc(t)}</li>`)
+    .map((t, i) => `<li${LATIN.test(t) ? ' dir="ltr"' : ''}${af(ctx, `items.${i}`, t)}>${esc(t)}</li>`)
     .join('');
   return `
 <section class="band" aria-label="${esc(d.ariaLabel)}">
-  <p class="band__label">${esc(d.label)}</p>
+  <p class="band__label"${af(ctx, 'label', d.label)}>${esc(d.label)}</p>
   <div class="band__viewport">
     <ul class="band__track" data-marquee>${items}</ul>
   </div>

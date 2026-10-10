@@ -1,13 +1,14 @@
 // Brief form: steps and fields are defined in content/sections/contact.json.
 // Field kinds: choice (radio chips), checks (checkbox group), check (single), select,
 // text, textarea, url, tel, email. Consecutive `half` fields share a row.
-import { esc, inline, slate } from '../core/format.js';
+import { af, esc, inline, key, slate, afText } from '../core/format.js';
 import { WA_ICON, waLink } from '../core/whatsapp.js';
 import { track } from '../core/analytics.js';
 
 const INPUT_DIR = { url: 'ltr', tel: 'ltr', email: 'ltr' };
 
-function field(f) {
+// a(key, value) → the studio preview's attributes for one of this field's keys ('' on the site)
+function field(f, a) {
   const req = f.required ? ' required' : '';
   const ac = f.autocomplete ? ` autocomplete="${esc(f.autocomplete)}"` : '';
   const ph = f.placeholder ? ` placeholder="${esc(f.placeholder)}"` : '';
@@ -15,48 +16,53 @@ function field(f) {
   switch (f.kind) {
     case 'choice':
       return `<div class="choices">${f.options
-        .map((o, i) => `<label class="choice"><input type="radio" name="${esc(f.name)}" value="${esc(o)}"${i === 0 ? req : ''}><span>${esc(o)}</span></label>`)
+        .map((o, i) => `<label class="choice"><input type="radio" name="${esc(f.name)}" value="${esc(o)}"${i === 0 ? req : ''}><span${a(`options.${i}`, o)}>${esc(o)}</span></label>`)
         .join('')}</div>`;
     case 'checks':
-      return `<div class="field"><span class="field__label">${esc(f.label)}</span><div class="checks">${f.options
-        .map((o) => `<label class="check"><input type="checkbox" name="${esc(f.name)}" value="${esc(o)}"><span>${esc(o)}</span></label>`)
+      return `<div class="field"><span class="field__label"${a('label', f.label)}>${esc(f.label)}</span><div class="checks">${f.options
+        .map((o, i) => `<label class="check"><input type="checkbox" name="${esc(f.name)}" value="${esc(o)}"><span${a(`options.${i}`, o)}>${esc(o)}</span></label>`)
         .join('')}</div></div>`;
     case 'check':
-      return `<label class="check"><input type="checkbox" name="${esc(f.name)}" value="${esc(f.value || 'כן')}"${f.checked ? ' checked' : ''}><span${lang}>${esc(f.label)}</span></label>`;
+      return `<label class="check"><input type="checkbox" name="${esc(f.name)}" value="${esc(f.value || 'כן')}"${f.checked ? ' checked' : ''}><span${lang}${a('label', f.label)}>${esc(f.label)}</span></label>`;
     case 'select':
-      return `<label class="field"><span class="field__label">${esc(f.label)}</span><select name="${esc(f.name)}"${req}>${f.options
+      return `<label class="field"><span class="field__label"${a('label', f.label)}>${esc(f.label)}</span><select name="${esc(f.name)}"${req}>${f.options
         .map((o) => `<option>${esc(o)}</option>`)
         .join('')}</select></label>`;
     case 'textarea':
-      return `<label class="field"><span class="field__label">${esc(f.label)}</span><textarea name="${esc(f.name)}" rows="4"${req}${ph}></textarea></label>`;
+      return `<label class="field"><span class="field__label"${a('label', f.label)}>${esc(f.label)}</span><textarea name="${esc(f.name)}" rows="4"${req}${ph}></textarea></label>`;
     default: {
       const type = ['url', 'tel', 'email'].includes(f.kind) ? f.kind : 'text';
       const dir = INPUT_DIR[type] ? ` dir="${INPUT_DIR[type]}" inputmode="${type}"` : '';
-      return `<label class="field"><span class="field__label">${esc(f.label)}</span><input type="${type}" name="${esc(f.name)}"${req}${ac}${ph}${dir}></label>`;
+      return `<label class="field"><span class="field__label"${a('label', f.label)}>${esc(f.label)}</span><input type="${type}" name="${esc(f.name)}"${req}${ac}${ph}${dir}></label>`;
     }
   }
 }
 
-function fields(list = []) {
+function fields(list = [], ctx, base) {
+  const at = (i) => (k, value) => af(ctx, `${base}.${key(list[i], i)}.${k}`, value);
   let html = '';
   for (let i = 0; i < list.length; i++) {
     const f = list[i];
     if (f.half && list[i + 1]?.half) {
-      html += `<div class="field-row">${field(f)}${field(list[i + 1])}</div>`;
+      html += `<div class="field-row">${field(f, at(i))}${field(list[i + 1], at(i + 1))}</div>`;
       i++;
     } else if (f.kind === 'check') {
       // group consecutive single checkboxes
-      let group = field(f);
-      while (list[i + 1]?.kind === 'check') group += field(list[++i]);
+      let group = field(f, at(i));
+      while (list[i + 1]?.kind === 'check') {
+        i++;
+        group += field(list[i], at(i));
+      }
       html += `<div class="checks">${group}</div>`;
     } else {
-      html += field(f);
+      html += field(f, at(i));
     }
   }
   return html;
 }
 
-export function render(d, { site, sc }) {
+export function render(d, ctx) {
+  const { site, sc } = ctx;
   const form = d.form || {};
   const steps = form.steps || [];
   const face = d.face || {};
@@ -67,15 +73,15 @@ export function render(d, { site, sc }) {
 <section class="contact" id="${esc(d.id || 'contact')}" aria-labelledby="contact-title">
   <div class="wrap contact__grid">
     <header class="contact__head">
-      ${slate(d.slate, sc, 'ink')}
-      <h2 id="contact-title" class="contact__title">${inline(d.title)}</h2>
-      <p>${inline(d.text)}</p>
+      ${slate(d.slate, sc, 'ink', ctx)}
+      <h2 id="contact-title" class="contact__title"${af(ctx, 'title', d.title, { multiline: true })}>${inline(d.title)}</h2>
+      <p${af(ctx, 'text', d.text)}>${inline(d.text)}</p>
       <div class="contact__direct">
         <a class="btn btn--ink" href="#contact" data-whatsapp>${WA_ICON} ${esc(site.contact?.whatsappLabel)}</a>
-        ${d.direct ? `<p class="contact__mail">${inline(d.direct)}</p>` : ''}
+        ${d.direct ? `<p class="contact__mail"${af(ctx, 'direct', d.direct)}>${inline(d.direct)}</p>` : ''}
       </div>
       <figure class="contact__face">
-        <div class="frame frame--ink" style="--ar: 1">
+        <div class="frame frame--ink" style="--ar: 1"${af(ctx, 'face', null)}>
           ${face.src ? `<img class="frame__media" src="${esc(face.src)}" alt="${esc(face.alt)}" loading="lazy">` : `<div class="frame__missing">${inline(face.missing)}</div>`}
         </div>
       </figure>
@@ -86,24 +92,27 @@ export function render(d, { site, sc }) {
         <div class="scrubber__ridges"></div>
         <div class="scrubber__head" data-scrubber></div>
       </div>
-      <p class="brief__count" aria-live="polite" data-step-label>${esc(stepLabel(1))}</p>
+      <p class="brief__count" aria-live="polite" data-step-label${af(ctx, 'form.stepLabel', null)}>${esc(stepLabel(1))}</p>
       ${steps
-        .map((s, i) => `
+        .map((s, i) => {
+          const p = `form.steps.${key(s, i)}`;
+          return `
       <fieldset class="brief__step" data-step="${i + 1}"${i ? ' hidden' : ''}>
-        <legend>${esc(s.legend)}</legend>
-        ${s.note ? `<p class="brief__note">${inline(s.note)}</p>` : ''}
-        ${fields(s.fields)}
-        <p class="brief__error" data-error hidden>${esc(s.error)}</p>
-      </fieldset>`)
+        <legend${af(ctx, `${p}.legend`, s.legend)}>${esc(s.legend)}</legend>
+        ${s.note ? `<p class="brief__note"${af(ctx, `${p}.note`, s.note)}>${inline(s.note)}</p>` : ''}
+        ${fields(s.fields, ctx, `${p}.fields`)}
+        <p class="brief__error" data-error hidden${af(ctx, `${p}.error`, s.error)}>${esc(s.error)}</p>
+      </fieldset>`;
+        })
         .join('')}
       <div class="brief__nav">
-        <button class="btn btn--ghost-ink" type="button" data-prev hidden>${esc(form.prev)}</button>
-        <button class="btn btn--ink" type="button" data-next>${esc(form.next)}</button>
-        <button class="btn btn--ink" type="submit" data-submit hidden>${esc(form.submit)}</button>
+        <button class="btn btn--ghost-ink" type="button" data-prev hidden>${afText(ctx, 'form.prev', form.prev, esc(form.prev))}</button>
+        <button class="btn btn--ink" type="button" data-next>${afText(ctx, 'form.next', form.next, esc(form.next))}</button>
+        <button class="btn btn--ink" type="submit" data-submit hidden>${afText(ctx, 'form.submit', form.submit, esc(form.submit))}</button>
       </div>
       <div class="brief__done" data-done hidden tabindex="-1">
-        <p class="brief__done-title">${esc(form.done?.title)}</p>
-        <p>${inline(form.done?.text)}</p>
+        <p class="brief__done-title"${af(ctx, 'form.done.title', form.done?.title)}>${esc(form.done?.title)}</p>
+        <p${af(ctx, 'form.done.text', form.done?.text)}>${inline(form.done?.text)}</p>
       </div>
     </form>
   </div>

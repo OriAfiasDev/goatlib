@@ -1,4 +1,4 @@
-import { esc, inline, isMissing, parseVideo, ratio, slate } from '../core/format.js';
+import { af, esc, inline, isMissing, key, parseVideo, ratio, slate } from '../core/format.js';
 import { track } from '../core/analytics.js';
 
 const PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>';
@@ -13,7 +13,8 @@ function thumb(it, v) {
   return '';
 }
 
-function frame(it, missingText) {
+// ctx and p (the item's field path) only matter in the studio's preview
+function frame(it, missingText, ctx, p) {
   const v = parseVideo(it.video);
   const name = isMissing(it.title) ? it.artist : `${it.title}, ${it.artist}`;
   const button = v
@@ -23,51 +24,52 @@ function frame(it, missingText) {
         </button>`
     : `<button class="frame__play" type="button" aria-label="${esc(name)}" disabled>${inline(missingText)}</button>`;
   return `
-      <div class="frame${v ? ' frame--video' : ''}" style="--ar: ${ratio(it.aspect)}">
+      <div class="frame${v ? ' frame--video' : ''}" style="--ar: ${ratio(it.aspect)}"${af(ctx, `${p}.video`, null)}>
         ${button}
-        <span class="frame__ar" dir="ltr">${esc(it.aspect)}</span>
-        ${it.views ? `<span class="frame__tc" dir="ltr">${inline(it.views)}</span>` : ''}
+        <span class="frame__ar" dir="ltr"${af(ctx, `${p}.aspect`, null)}>${esc(it.aspect)}</span>
+        ${it.views ? `<span class="frame__tc" dir="ltr"${af(ctx, `${p}.views`, it.views)}>${inline(it.views)}</span>` : ''}
       </div>`;
 }
 
-function item(it, missingText) {
+function item(it, missingText, ctx, p) {
   const q = it.quote;
   return `
     <article class="work__item">
-      ${frame(it, missingText)}
+      ${frame(it, missingText, ctx, p)}
       <div class="work__meta">
-        <h3 class="work__title">${inline(it.title)}</h3>
-        <p class="work__artist">${esc(it.artist)}</p>
-        <p class="work__role">${esc(it.role)}</p>
-        ${it.cast ? `<p class="work__cast">${inline(it.cast)}</p>` : ''}
+        <h3 class="work__title"${af(ctx, `${p}.title`, it.title)}>${inline(it.title)}</h3>
+        <p class="work__artist"${af(ctx, `${p}.artist`, it.artist)}>${esc(it.artist)}</p>
+        <p class="work__role"${af(ctx, `${p}.role`, it.role)}>${esc(it.role)}</p>
+        ${it.cast ? `<p class="work__cast"${af(ctx, `${p}.cast`, it.cast)}>${inline(it.cast)}</p>` : ''}
       </div>
-      ${q ? `<blockquote class="work__quote"${q.lang === 'en' ? ' lang="en" dir="ltr"' : ''}><p>${esc(q.text)}</p><footer>${esc(q.by)}</footer></blockquote>` : ''}
+      ${q ? `<blockquote class="work__quote"${q.lang === 'en' ? ' lang="en" dir="ltr"' : ''}><p${af(ctx, `${p}.quote.text`, q.text)}>${esc(q.text)}</p><footer${af(ctx, `${p}.quote.by`, q.by)}>${esc(q.by)}</footer></blockquote>` : ''}
     </article>`;
 }
 
-export function render(d, { sc }) {
+export function render(d, ctx) {
+  const { sc } = ctx;
   // never the same formula twice: items alternate between two offset columns
   const items = d.items || [];
-  const col = (parity) => items.filter((_, i) => i % 2 === parity).map((it) => item(it, d.missingVideo)).join('');
+  const col = (parity) => items.filter((_, i) => i % 2 === parity).map((it) => item(it, d.missingVideo, ctx, `items.${key(it, items.indexOf(it))}`)).join('');
   const cta = d.cta;
   return `
 <section class="clips" id="${esc(d.id || 'clips')}" aria-labelledby="clips-title">
   <div class="wrap">
     <header class="section-head section-head--split">
       <div>
-        ${slate(d.slate, sc)}
-        <h2 id="clips-title" class="h-display">${esc(d.title)}</h2>
+        ${slate(d.slate, sc, '', ctx)}
+        <h2 id="clips-title" class="h-display"${af(ctx, 'title', d.title)}>${esc(d.title)}</h2>
       </div>
-      <p class="section-head__aside">${inline(d.aside)}</p>
+      <p class="section-head__aside"${af(ctx, 'aside', d.aside)}>${inline(d.aside)}</p>
     </header>
     <div class="work">
       <div class="work__col work__col--start">${col(0)}</div>
       <div class="work__col work__col--end">${col(1)}</div>
     </div>
     <div class="clips__foot">
-      ${d.more ? `<p class="clips__more">${inline(d.more)}</p>` : ''}
-      ${d.quotes ? `<p class="clips__quotes">${inline(d.quotes)}</p>` : ''}
-      ${cta ? `<a class="link-arrow" href="${esc(cta.href)}"${cta.prefill ? ` data-prefill="${esc(JSON.stringify(cta.prefill))}"` : ''}>${esc(cta.label)}</a>` : ''}
+      ${d.more ? `<p class="clips__more"${af(ctx, 'more', d.more)}>${inline(d.more)}</p>` : ''}
+      ${d.quotes ? `<p class="clips__quotes"${af(ctx, 'quotes', d.quotes)}>${inline(d.quotes)}</p>` : ''}
+      ${cta ? `<a class="link-arrow" href="${esc(cta.href)}"${cta.prefill ? ` data-prefill="${esc(JSON.stringify(cta.prefill))}"` : ''}${af(ctx, 'cta.label', cta.label)}>${esc(cta.label)}</a>` : ''}
     </div>
   </div>
   <dialog class="player" aria-label="נגן וידאו">

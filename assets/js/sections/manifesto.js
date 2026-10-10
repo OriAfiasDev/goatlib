@@ -1,7 +1,7 @@
 // One sentence, revealed word by word (CSS scroll-driven, IntersectionObserver fallback).
-import { esc } from '../core/format.js';
+import { af, esc } from '../core/format.js';
 
-export function render(d) {
+export function render(d, ctx) {
   const words = String(d.text || '').trim().split(/\s+/);
   const from = d.accentFrom ? words.indexOf(d.accentFrom) : -1;
   const html = words
@@ -10,8 +10,8 @@ export function render(d) {
   return `
 <section class="manifesto" aria-label="${esc(d.ariaLabel)}">
   <blockquote class="manifesto__quote">
-    <p>${html}</p>
-    ${d.by ? `<footer>${esc(d.by)}</footer>` : ''}
+    <p${af(ctx, 'text', null)}>${html}</p>
+    ${d.by ? `<footer${af(ctx, 'by', d.by)}>${esc(d.by)}</footer>` : ''}
   </blockquote>
 </section>`;
 }

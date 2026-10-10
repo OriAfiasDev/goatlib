@@ -1,6 +1,6 @@
-import { esc, inline, ratio } from '../core/format.js';
+import { af, esc, inline, ratio, afText } from '../core/format.js';
 
-export function render(d) {
+export function render(d, ctx) {
   const v = d.video || {};
   const hasVideo = v.mp4 || v.webm;
   const media = hasVideo
@@ -8,18 +8,18 @@ export function render(d) {
       (v.webm ? `<source src="${esc(v.webm)}" type="video/webm">` : '') +
       (v.mp4 ? `<source src="${esc(v.mp4)}" type="video/mp4">` : '') +
       `</video>`
-    : `<div class="frame__missing"><span class="frame__slate" dir="ltr">${esc(d.clapper)}</span>${inline(d.missing)}</div>`;
+    : `<div class="frame__missing"><span class="frame__slate" dir="ltr"${af(ctx, 'clapper', d.clapper)}>${esc(d.clapper)}</span>${afText(ctx, 'missing', d.missing, inline(d.missing))}</div>`;
 
   return `
 <section class="reel" id="${esc(d.id || 'reel')}" aria-label="${esc(d.caption)}">
   <div class="wrap">
     <figure class="reel__figure">
-      <div class="frame frame--scope" style="--ar: ${ratio(d.aspect)}">
+      <div class="frame frame--scope" style="--ar: ${ratio(d.aspect)}"${af(ctx, 'video', null)}>
         ${media}
-        <span class="frame__ar" dir="ltr">${esc(d.aspect)}</span>
+        <span class="frame__ar" dir="ltr"${af(ctx, 'aspect', null)}>${esc(d.aspect)}</span>
         <span class="frame__tc" dir="ltr" data-timecode>00:00:00:00</span>
       </div>
-      <figcaption class="reel__cap">${esc(d.caption)}</figcaption>
+      <figcaption class="reel__cap"${af(ctx, 'caption', d.caption)}>${esc(d.caption)}</figcaption>
     </figure>
   </div>
 </section>`;

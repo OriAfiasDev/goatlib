@@ -1,20 +1,22 @@
 // "How it works" as a strip of film: each step is a frame, and scrolling down
 // pulls the strip sideways through a pinned stage. Without JS or with reduced
 // motion it is a plain horizontal scroller with prev/next buttons.
-import { esc, inline, slate } from '../core/format.js';
+import { af, esc, inline, key, slate } from '../core/format.js';
 
-export function render(d, { sc }) {
+export function render(d, ctx) {
+  const { sc } = ctx;
   const steps = d.steps || [];
   const frames = steps
     .map((s, i) => {
       const n = String(i + 1).padStart(2, '0');
+      const p = `steps.${key(s, i)}`;
       return `
         <li class="film__frame${s.highlight ? ' film__frame--hot' : ''}">
           <div class="film__pic">
             <p class="step__tc" dir="ltr">TC ${n}</p>
-            <h3 class="step__title">${esc(s.title)}</h3>
-            <p class="step__text">${inline(s.text)}</p>
-            ${s.time ? `<p class="step__time">${inline(s.time)}</p>` : ''}
+            <h3 class="step__title"${af(ctx, `${p}.title`, s.title)}>${esc(s.title)}</h3>
+            <p class="step__text"${af(ctx, `${p}.text`, s.text)}>${inline(s.text)}</p>
+            ${s.time ? `<p class="step__time"${af(ctx, `${p}.time`, s.time)}>${inline(s.time)}</p>` : ''}
           </div>
           <span class="film__edge" dir="ltr" aria-hidden="true">GOATLIB 35 ▸ ${n}${i % 2 ? '' : 'A'}</span>
         </li>`;
@@ -27,8 +29,8 @@ export function render(d, { sc }) {
     <div class="wrap">
       <header class="section-head section-head--split process__head">
         <div>
-          ${slate(d.slate, sc)}
-          <h2 id="process-title" class="h-display">${esc(d.title)}</h2>
+          ${slate(d.slate, sc, '', ctx)}
+          <h2 id="process-title" class="h-display"${af(ctx, 'title', d.title)}>${esc(d.title)}</h2>
         </div>
         <div class="process__nav">
           <button class="icon-btn" type="button" data-scroll="prev" aria-label="${esc(d.prevLabel)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
